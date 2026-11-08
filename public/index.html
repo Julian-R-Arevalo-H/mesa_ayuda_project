@@ -1,0 +1,132 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Solicitudes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="contenedor">
+        <h1>Gestión de Solicitudes</h1>
+        <p>Registra tus solicitudes de soporte tecnológico.</p>
+
+        <form id="formulario">
+
+            <label>Nombre del solicitante</label>
+            <input type="text" name="solicitante" required>
+
+            <label>Correo electrónico</label>
+            <input type="email" name="correo" required>
+
+            <label>Tipo de solicitud</label>
+            <select name="tipo" required>
+                <option value="">Seleccione una opción</option>
+                <option value="Soporte técnico">Soporte técnico</option>
+                <option value="Software">Software</option>
+                <option value="Hardware">Hardware</option>
+                <option value="Redes">Redes</option>
+            </select>
+
+            <label>Descripción</label>
+            <textarea name="descripcion" minlength="15"
+                required></textarea>
+
+            <label>Prioridad</label>
+            <select name="prioridad" required>
+                <option value="">Seleccione una prioridad</option>
+                <option value="Baja">Baja</option>
+                <option value="Media">Media</option>
+                <option value="Alta">Alta</option>
+                <option value="Crítica">Crítica</option>
+            </select>
+
+            <button type="submit">Registrar solicitud</button>
+
+        </form>
+
+        <p id="mensaje"></p>
+
+        <h2>Solicitudes registradas</h2>
+        <ul id="listaSolicitudes"></ul>
+    </div>
+
+    <script>
+        const formulario = document.getElementById("formulario");
+        const mensaje = document.getElementById("mensaje");
+        const lista = document.getElementById("listaSolicitudes");
+
+        // Registrar solicitud
+        formulario.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const datos = Object.fromEntries(
+                new FormData(formulario)
+            );
+
+            try {
+                const respuesta = await fetch("/api/solicitudes", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(datos)
+                });
+
+                const resultado = await respuesta.json();
+
+                mensaje.textContent = resultado.mensaje;
+
+                if (respuesta.ok) {
+                    formulario.reset();
+                    cargarSolicitudes();
+                }
+            } catch (error) {
+                mensaje.textContent = "Error de conexión con el servidor";
+            }
+        });
+
+        // Consultar solicitudes
+        async function cargarSolicitudes() {
+            try {
+                const respuesta = await fetch("/api/solicitudes");
+                const solicitudes = await respuesta.json();
+
+                lista.innerHTML = "";
+
+                solicitudes.forEach(solicitud => {
+                    const item = document.createElement("li");
+
+                    item.textContent =
+                        `#${solicitud.id} - ${solicitud.solicitante} - ` +
+                        `${solicitud.tipo} - ${solicitud.prioridad} - ` +
+                        `${solicitud.fecha}`;
+
+                    lista.appendChild(item);
+                });
+            } catch (error) {
+                mensaje.textContent = "No se pudieron consultar las solicitudes";
+            }
+        }
+
+        cargarSolicitudes();
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

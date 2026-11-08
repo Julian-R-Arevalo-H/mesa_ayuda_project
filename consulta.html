@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head><title>Mi Web</title></head>
+<body><h1>Hola Mundo</h1></body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de solicitudes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Consulta de solicitudes</h1>
+        <p>Listado de solicitudes registradas</p>
+    </header>
+
+    <main>
+        <div class="contenedor">
+            <h2>Solicitudes registradas</h2>
+
+            <div class="tabla-contenedor">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Identificador</th>
+                            <th>Solicitante</th>
+                            <th>Tipo de problema</th>
+                            <th>Descripci¢n</th>
+                            <th>Prioridad</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tablaSolicitudes">
+                        <tr>
+                            <td colspan="6">Cargando solicitudes...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <a href="index.html" class="boton">
+                Volver al formulario
+            </a>
+        </div>
+    </main>
+
+    <script>
+        async function cargarSolicitudes() {
+            const tabla = document.getElementById("tablaSolicitudes");
+
+            try {
+                const respuesta = await fetch("/api/solicitudes");
+                const solicitudes = await respuesta.json();
+
+                tabla.innerHTML = "";
+
+                if (solicitudes.length === 0) {
+                    tabla.innerHTML = `
+                        <tr>
+                            <td colspan="6">
+                                No existen solicitudes registradas.
+                            </td>
+                        </tr>`;
+                    return;
+                }
+
+                solicitudes.forEach(solicitud => {
+                    const fila = document.createElement("tr");
+
+                    fila.innerHTML = `
+                        <td>${solicitud.id}</td>
+                        <td>${solicitud.solicitante}</td>
+                        <td>${solicitud.tipo}</td>
+                        <td>${solicitud.descripcion}</td>
+                        <td>${solicitud.prioridad}</td>
+                        <td>${solicitud.fecha}</td>
+                    `;
+
+                    tabla.appendChild(fila);
+                });
+
+            } catch (error) {
+                tabla.innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            Error al cargar las solicitudes.
+                        </td>
+                    </tr>`;
+            }
+        }
+
+        cargarSolicitudes();
+    </script>
+
+</body>
+</html>
+
+
+
+exit
+
+cd ..
+
+notepad public\style.css
+
