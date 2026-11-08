@@ -1,6 +1,3 @@
-// const app = express();
-// const PORT = 3000;
-
 
 const express = require("express");
 const fs = require("fs");
@@ -8,16 +5,6 @@ const path = require("path");
 
 const app = express();
 const PORT = 3000;
-
-
-
-//solicitud.id
-//solicitud.solicitante
-//solicitud.tipo
-//solicitud.descripcion
-//solicitud.prioridad
-//solicitud.fecha
-
 
 // Rutas de archivos
 const carpetaDatos = path.join(__dirname, "data");
@@ -54,8 +41,7 @@ function guardarSolicitudes(solicitudes) {
 }
 
 // Página principal
-
-t("/", (req, res) => {
+app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
@@ -115,7 +101,7 @@ app.post("/api/solicitudes", (req, res) => {
             fecha: new Date().toLocaleString("es-CO")
         };
 
-        // Guardar
+        // Guardar solicitud
         solicitudes.push(nuevaSolicitud);
         guardarSolicitudes(solicitudes);
 
