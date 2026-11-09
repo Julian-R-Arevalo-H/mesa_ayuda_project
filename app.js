@@ -1,3 +1,10 @@
+const expresionCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+if (!expresionCorreo.test(correo.trim())) {
+    return res.status(400).json({
+        mensaje: "El correo electrónico no tiene un formato válido"
+    });
+}
 
 const express = require("express");
 const fs = require("fs");
